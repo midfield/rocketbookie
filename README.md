@@ -10,23 +10,24 @@ Easy incremental append to multiple existing PDFs, with searchable OCR.
 
 1. Top level PDFs which are appended to on an ongoing basis.
 2. Cloud folders which receive new pages from the Rocketbook app.
+3. Use destinations to save PDFs to appropriate cloud folders. Use timestamped
+   naming template (default is fine). Turn OCR on, separate file for transcript
+   (two files option). Bunding optional.
 
 PDFs and associated folders should have the same name (minus the prefix) and
 be in the same folder.
 
 Basic workflow:
 
-1. Write stuff in Rocketbook.
-2. Use destinations to save PDFs to appropriate cloud folders. Use standard
-   naming template (RB-timestamp.pdf). Turn OCR on, in two files. Bunding
-   optional.
+1. Write stuff.
+2. Mark destinations and scan.
 3. Run rocketbookie.
 
 Rocketbookie does the following:
 
-1. Checks folders for new pdf/transcript pairs.
+1. Checks cloud folders for new pdf/transcript pairs.
 2. Appends the PDFs to the top level PDFs, in alphabetical (timestamp) order,
-   using
+   using ghostscript:
 
 ```
 gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -dPDFSETTINGS=/prepress \
@@ -34,15 +35,38 @@ gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -dPDFSETTINGS=/prepress \
   in1.pdf in2.pdf ...
 ```
 
-3. Archives the PDFs and transcripts by moving them to the "archive" subfolder.
+3. Archives the PDFs and transcripts by moving them to the `archive` subfolder.
 
 ## Install ##
 
-1. Install `ghostscript`.
-2. Install `pipenv`.
-3. `pipenv install`.
+1. Install `python3`, `pipenv`, `ghostscript`.
+2. `cd <dir> && pipenv --python 3 && pipenv install`.
+
+## Usage ##
+
+Run in the virtualenv created above:
+
+```
+$ pipenv shell
+$ python ./rocketbookie.py --help
+
+Usage: rocketbookie.py [OPTIONS] PATH
+
+  Bundle PDFs at PATH.
+
+  PATH can be a PDF, in which case additional PDFs to append are searched
+  for in a directory with the same name sans suffix.
+
+  PATH can be a directory, in which case all PDFs with matching directories
+  are processed.
+
+Options:
+  --help  Show this message and exit.
+```
 
 ## Notes ##
+
+Dealing with privacy / encryption?
 
 Option for monthly / yearly bundles?
 
@@ -63,4 +87,3 @@ https://stackoverflow.com/questions/2507766/merge-convert-multiple-pdf-files-int
 * `qpdf` (breaks links)
 * `ghostscript`
 * various python libraries based on PyPDF* (sucks)
-
